@@ -19,3 +19,32 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+#container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+#iterator td {
+  border: 2px solid rgb(39, 22, 22);
+  width: 118px;
+  height: 66px;
+  border-radius: 50%;
+}
+
+tr:nth-child(even) {
+  height: 50px;
+}
+
+.inactive {
+  background-color: antiquewhite;
+}
+
+.active { 
+  background-color: rgb(197, 110, 110);
+}
+
+#drumbo {
+  background-color: rgb(143, 212, 212)
+}
