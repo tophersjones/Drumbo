@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 // import styles from '../../public/style'
-
-import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-
-const snare = new Audio ()
-snare.src = "./snare 1 open hard.wav"
+import Snare from './Snare'
+import { connect } from 'react-redux'
 
 export default class UserHome extends Component {
   constructor() {
@@ -15,7 +11,8 @@ export default class UserHome extends Component {
       activeCell: 0,
       tempoInMs: 180,
       intervalId: '',
-      isGoing: false
+      isGoing: false,
+      isArmed: []
     }
     this.iterateFunc = this.iterateFunc.bind(this)
     this.handleClick = this.handleClick.bind(this)
@@ -23,12 +20,10 @@ export default class UserHome extends Component {
 
   handleInputChange = (event) => {
     this.setState({ tempo: event.target.value })
-
   }
 
   startIterator = (event) => {
     event.preventDefault()
-    snare.play()
     this.iterateFunc()
     this.setState({isGoing: true})
     
@@ -50,7 +45,7 @@ export default class UserHome extends Component {
 
   iterateFunc =  function() {
     let cell = -1
-    this.setState({intervalId: setInterval(  () => {
+    this.setState({intervalId: setInterval( () => {
        this.setState({
          activeCell: (++cell) % 16
        })
@@ -58,12 +53,19 @@ export default class UserHome extends Component {
     })
   }
 
-  handleClick = function(event) {
+  handleClick = (event) => {
     const cell = event.currentTarget
+    const cellId = Number(event.target.getAttribute('value'))
     if (cell.classList.contains("active")) {
       cell.classList.remove("active")
+      const newArr = this.state.isArmed.filter(num => num !== cellId)
+      this.setState({isArmed: newArr})
     } else {
       cell.classList.add("active")
+      !this.state.isArmed.includes(cellId) &&
+      this.setState(prevState => ({
+        isArmed: [...prevState.isArmed, cellId]
+      }))
     }
   }
 
@@ -93,34 +95,38 @@ export default class UserHome extends Component {
       cell.active = 0
     })
 
-    return (
+    const playIt = this.state.isArmed.includes(this.state.activeCell)
 
+    return (
       <div id="container">
-        <h3>Welcome</h3>
-          <table id="iterator">
-            <tbody>
-              <tr>
-            { 
-              iterator.map(cell => 
-                (cell.active ?
-                  (
-                  <td 
+        {
+          playIt && 
+          <Snare />
+        }
+        <table id="iterator">
+          <tbody>
+            <tr>
+          { 
+            iterator.map(cell => 
+              (cell.active ?
+                (
+                <td 
                   key={cell.id} 
                   id="drumbo" 
                   value={cell.id}
                   onClick={this.handleClick} />
-                ) : (
+              ) : (
                 <td 
                   key={cell.id} 
                   id="cell" 
                   value={cell.id}
                   onClick={this.handleClick} />
-                )
-              ))
-            }
-              </tr>
-            </tbody>
-          </table>
+              )
+            ))
+          }
+            </tr>
+          </tbody>
+        </table>
         <div id="buttons">
           <form>
             <label>
@@ -163,24 +169,4 @@ export default class UserHome extends Component {
       </div>
     )
   }
-
-  }
-
-/**
- * CONTAINER
- */
-
-// const mapState = state => {
-//   return {
-//     email: state.user.email
-//   }
-// }
-
-// export default connect(mapState)(UserHome)
-
-// /**
-//  * PROP TYPES
-//  */
-// UserHome.propTypes = {
-//   email: PropTypes.string
-// }
+}

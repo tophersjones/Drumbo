@@ -1,24 +1,23 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
+import Sound from 'react-sound'
 
-const snare = new Audio ()
-snare.src = "snare 1 open hard.wav"
+const soundFile = 'https://res.cloudinary.com/dl7gzlb0w/video/upload/v1531265492/Kick.mp3'
 
-class Snare extends Component {
-  constructor() {
-    super()
-  }
+// import { SoundManager } from '../../node_modules/soundmanager2';
 
-  render() {
-    snare.play()
-    return (
+const Snare = () => {
+  return (
     <div>
     <h1>Snare</h1>
-
+      <Sound 
+        autoLoad={true}
+        url={soundFile}
+        playStatus={Sound.status.PLAYING}
+        />
     </div>
   )
-
-  }
 }
+
 
 export default Snare
