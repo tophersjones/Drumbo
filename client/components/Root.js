@@ -1,18 +1,24 @@
 import React, { Component } from 'react'
 // import styles from '../../public/style'
-import Snare from './Snare'
+import Snare from './instruments/Snare'
+import Kick from './instruments/Kick'
+import Floor from './instruments/Floor'
+import Rack from './instruments/Rack'
+import Hat from './instruments/Hat'
+import Ride from './instruments/Ride'
+import Crash from './instruments/Crash'
 import { connect } from 'react-redux'
+import InstButtons from './InstButtons'
+import { armInstrumentThunk, disarmInstrumentThunk } from '../store/instruments';
 
-export default class UserHome extends Component {
-  constructor() {
+class Root extends Component {
+  constructor () {
     super()
     this.state = {
       tempo: 120,
       activeCell: 0,
       tempoInMs: 180,
-      intervalId: '',
-      isGoing: false,
-      isArmed: []
+      intervalId: ''
     }
     this.iterateFunc = this.iterateFunc.bind(this)
     this.handleClick = this.handleClick.bind(this)
@@ -56,16 +62,13 @@ export default class UserHome extends Component {
   handleClick = (event) => {
     const cell = event.currentTarget
     const cellId = Number(event.target.getAttribute('value'))
+    const instrument = this.props.currentInstrument
     if (cell.classList.contains("active")) {
       cell.classList.remove("active")
-      const newArr = this.state.isArmed.filter(num => num !== cellId)
-      this.setState({isArmed: newArr})
+      this.props.disarmInst(cellId, instrument)
     } else {
       cell.classList.add("active")
-      !this.state.isArmed.includes(cellId) &&
-      this.setState(prevState => ({
-        isArmed: [...prevState.isArmed, cellId]
-      }))
+      this.props.armInst(cellId, instrument)
     }
   }
 
@@ -95,14 +98,17 @@ export default class UserHome extends Component {
       cell.active = 0
     })
 
-    const playIt = this.state.isArmed.includes(this.state.activeCell)
+    // const playIt = this.state.isArmed.includes(this.state.activeCell)
 
     return (
       <div id="container">
-        {
-          playIt && 
-          <Snare />
-        }
+        <Snare activeCell={this.state.activeCell}/>
+        <Kick activeCell={this.state.activeCell}/>
+        <Floor activeCell={this.state.activeCell}/>
+        <Rack activeCell={this.state.activeCell}/>
+        <Hat activeCell={this.state.activeCell}/>
+        <Ride activeCell={this.state.activeCell}/>
+        <Crash activeCell={this.state.activeCell}/>
         <table id="iterator">
           <tbody>
             <tr>
@@ -121,8 +127,9 @@ export default class UserHome extends Component {
                   id="cell" 
                   value={cell.id}
                   onClick={this.handleClick} />
-              )
-            ))
+                )
+              ) 
+            )
           }
             </tr>
           </tbody>
@@ -165,8 +172,24 @@ export default class UserHome extends Component {
             Stop
           </button>
         </div>
+        <InstButtons />
         <div>{this.state.activeCell + 1}</div>
       </div>
     )
   }
 }
+
+const mapState = state => {
+  return {
+    currentInstrument: state.currentInst.selectedInstrument
+  }
+}
+
+const mapDispatch = dispatch => {
+  return {
+    armInst: (cellId, instrument) => dispatch(armInstrumentThunk(cellId, instrument)),
+    disarmInst: (cellId, instrument) => dispatch(disarmInstrumentThunk(cellId, instrument)),
+  }
+}
+
+export default connect(mapState, mapDispatch)(Root)
