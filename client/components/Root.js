@@ -18,10 +18,8 @@ class Root extends Component {
       tempo: 120,
       activeCell: 0,
       tempoInMs: 180,
-      intervalId: ''
+      intervalId: '',
     }
-    this.iterateFunc = this.iterateFunc.bind(this)
-    this.handleClick = this.handleClick.bind(this)
   }
 
   handleInputChange = (event) => {
@@ -49,7 +47,7 @@ class Root extends Component {
 
   }
 
-  iterateFunc =  function() {
+  iterateFunc = () => {
     let cell = -1
     this.setState({intervalId: setInterval( () => {
        this.setState({
