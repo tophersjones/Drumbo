@@ -19,6 +19,7 @@ class Root extends Component {
       activeCell: 0,
       tempoInMs: 180,
       intervalId: '',
+      sounds: []
     }
   }
 
@@ -91,7 +92,7 @@ class Root extends Component {
     ]
 
     iterator.map((cell) => {
-      cell.id === this.state.activeCell ?
+      cell.id === this.state.activeCell ? //
       cell.active = 1 :
       cell.active = 0
     })
@@ -141,14 +142,14 @@ class Root extends Component {
                   type="number"
                   min="44"
                   max="266"
-                  value={this.state.tempo}
-                  onChange={this.handleInputChange} />
+                  value={this.state.tempo} {/* */}
+                  onChange={this.handleInputChange} /> {/* */}
             </label>
               <br />
             <button 
               type="submit"
-              value={this.state.tempo}
-              onClick={this.setTempo}
+              value={this.state.tempo} {/* */}
+              onClick={this.setTempo} {/* */}
             >
             Set
             </button>
@@ -157,21 +158,21 @@ class Root extends Component {
           <button
             type="submit"
             value="Start"
-            disabled={this.state.isGoing}
-            onClick={this.startIterator} >
+            disabled={this.state.isGoing} {/* */}
+            onClick={this.startIterator} > {/* */}
               Start
           </button>
             <br />
           <button
             type="submit"
             value="Stop"
-            disabled={!this.state.isGoing}
-            onClick={this.stopIterator} >
-            Stop
+            disabled={!this.state.isGoing} {/* */}
+            onClick={this.stopIterator} > {/* */}
+             Stop
           </button>
         </div>
         <InstButtons />
-        <div>{this.state.activeCell + 1}</div>
+        <div>{this.state.activeCell + 1}</div> {/* */}
       </div>
     )
   }

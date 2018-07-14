@@ -1,3 +1,4 @@
+
 const SWITCH_INSTRUMENT = 'SWITCH_INSTRUMENT'
 
 const initialState = {

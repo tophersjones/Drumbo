@@ -5,8 +5,9 @@ import {composeWithDevTools} from 'redux-devtools-extension'
 import user from './user'
 import currentInst from './currentInst'
 import instruments from './instruments'
+import iterator from './iterator'
 
-const reducer = combineReducers({user, currentInst, instruments})
+const reducer = combineReducers({user, currentInst, instruments, iterator})
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 )

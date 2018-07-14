@@ -10,13 +10,29 @@ const DISARM_INSTRUMENT = 'DISARM_INSTRUMENT'
  */
 
 const initialState = {
-    snare: [],
-    kick: [],
-    floor: [],
-    rack: [],
-    hat: [],
-    ride: [],
-    crash: []
+    // snare: [],
+    // kick: [],
+    // floor: [],
+    // rack: [],
+    // hat: [],
+    // ride: [],
+    // crash: []
+  0: [],
+  1: [],
+  2: [],
+  3: [],
+  4: [],
+  5: [],
+  6: [],
+  7: [],
+  8: [],
+  9: [],
+  10: [],
+  11: [],
+  12: [],
+  13: [],
+  14: [],
+  15: [],
 }
 
 /**
