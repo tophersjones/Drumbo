@@ -4,19 +4,13 @@
 
 const ARM_INSTRUMENT = 'ARM_INSTRUMENT'
 const DISARM_INSTRUMENT = 'DISARM_INSTRUMENT'
+const CLEAR_DRUMBO = 'CLEAR_DRUMBO'
 
 /**
  * INITIAL STATE
  */
 
 const initialState = {
-    // snare: [],
-    // kick: [],
-    // floor: [],
-    // rack: [],
-    // hat: [],
-    // ride: [],
-    // crash: []
   0: [],
   1: [],
   2: [],
@@ -55,6 +49,12 @@ const disarmInstrumentAction = (cellId, instrument) => {
   }
 }
 
+const clearDrumboAction = () => {
+  return {
+    type: CLEAR_DRUMBO
+  }
+}
+
 /**
  * THUNK CREATORS
  */
@@ -73,6 +73,13 @@ export const disarmInstrumentThunk = (cellId, instrument) => {
   }
 }
 
+export const clearDrumboThunk = () => {
+  return dispatch => {
+    const action = clearDrumboAction()
+    dispatch(action)
+  }
+}
+
 /**
  * REDUCER
  */
@@ -80,11 +87,14 @@ export const disarmInstrumentThunk = (cellId, instrument) => {
 export default function(state = initialState, action) {
   switch (action.type) {
     case ARM_INSTRUMENT:
-      const inst = action.instrument
-      return { ...state, [inst]: [...state[inst], action.cellId] }
+      const beat = action.cellId
+      return { ...state, [beat]: [...state[beat], action.instrument] }
     case DISARM_INSTRUMENT:
-      const filteredArr = state[action.instrument].filter(num => num !== action.cellId)
-      return { ...state, [action.instrument]: filteredArr }
+      const filteredArr = state[action.cellId].filter(instrument => instrument !== action.instrument)
+      console.log(filteredArr)
+      return { ...state, [action.cellId]: filteredArr }
+    case CLEAR_DRUMBO:
+      return initialState 
     default:
       return state
   }
