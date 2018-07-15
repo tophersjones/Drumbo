@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
 // import styles from '../../public/style'
-import Snare from './instruments/Snare'
-import Kick from './instruments/Kick'
-import Floor from './instruments/Floor'
-import Rack from './instruments/Rack'
-import Hat from './instruments/Hat'
-import Ride from './instruments/Ride'
-import Crash from './instruments/Crash'
+import Sound from 'react-sound'
 import { connect } from 'react-redux'
 import InstButtons from './InstButtons'
-import { armInstrumentThunk, disarmInstrumentThunk } from '../store/instruments';
+import { armInstrumentThunk, disarmInstrumentThunk, clearDrumboThunk } from '../store/instruments';
 
 class Root extends Component {
   constructor () {
@@ -19,7 +13,14 @@ class Root extends Component {
       activeCell: 0,
       tempoInMs: 180,
       intervalId: '',
+      isGoing: false,
+      sounds: []
     }
+  }
+
+  componentDidUpdate() {
+    this.updateSoundArr()
+    console.log('huh')
   }
 
   handleInputChange = (event) => {
@@ -44,17 +45,29 @@ class Root extends Component {
     const bpmToMs = 15000 / event.target.value;
     this.setState({tempoInMs: bpmToMs})
     console.log(`tempo updated to ${bpmToMs} ms`)
+  }
 
+  updateSoundArr = async () => {
+    const activeCell = this.state.activeCell
+    const test1 = await this.state.sounds
+    const test2 = await this.props.instruments[activeCell]
+      if (JSON.stringify(test1) !== JSON.stringify(test2)) {
+      this.setState({ sounds: this.props.instruments[activeCell] })
+    }
   }
 
   iterateFunc = () => {
     let cell = -1
     this.setState({intervalId: setInterval( () => {
        this.setState({
-         activeCell: (++cell) % 16
+         activeCell: (++cell) % 16,
        })
     }, this.state.tempoInMs)
     })
+  }
+
+  clearDrumbo = () => {
+    this.props.clearDrumbo()
   }
 
   handleClick = (event) => {
@@ -91,7 +104,7 @@ class Root extends Component {
     ]
 
     iterator.map((cell) => {
-      cell.id === this.state.activeCell ?
+      cell.id === this.state.activeCell ? //
       cell.active = 1 :
       cell.active = 0
     })
@@ -100,13 +113,9 @@ class Root extends Component {
 
     return (
       <div id="container">
-        <Snare activeCell={this.state.activeCell}/>
-        <Kick activeCell={this.state.activeCell}/>
-        <Floor activeCell={this.state.activeCell}/>
-        <Rack activeCell={this.state.activeCell}/>
-        <Hat activeCell={this.state.activeCell}/>
-        <Ride activeCell={this.state.activeCell}/>
-        <Crash activeCell={this.state.activeCell}/>
+        {
+          this.state.sounds.map(sound => <Sound autoLoad={true} url={sound.url} playStatus={Sound.status.PLAYING} playFromPosition={-20} />)
+        }
         <table id="iterator">
           <tbody>
             <tr>
@@ -141,14 +150,14 @@ class Root extends Component {
                   type="number"
                   min="44"
                   max="266"
-                  value={this.state.tempo}
-                  onChange={this.handleInputChange} />
+                  value={this.state.tempo} 
+                  onChange={this.handleInputChange} /> 
             </label>
               <br />
             <button 
               type="submit"
-              value={this.state.tempo}
-              onClick={this.setTempo}
+              value={this.state.tempo} 
+              onClick={this.setTempo} 
             >
             Set
             </button>
@@ -157,21 +166,27 @@ class Root extends Component {
           <button
             type="submit"
             value="Start"
-            disabled={this.state.isGoing}
-            onClick={this.startIterator} >
+            disabled={this.state.isGoing} 
+            onClick={this.startIterator} > 
               Start
           </button>
             <br />
           <button
             type="submit"
             value="Stop"
-            disabled={!this.state.isGoing}
-            onClick={this.stopIterator} >
-            Stop
+            disabled={!this.state.isGoing} 
+            onClick={this.stopIterator} > 
+              Stop
+          </button>
+            <br />
+          <button 
+            type="submit"
+            onClick={this.clearDrumbo} >
+              Clear
           </button>
         </div>
         <InstButtons />
-        <div>{this.state.activeCell + 1}</div>
+        <div>{this.state.activeCell + 1}</div> 
       </div>
     )
   }
@@ -179,7 +194,8 @@ class Root extends Component {
 
 const mapState = state => {
   return {
-    currentInstrument: state.currentInst.selectedInstrument
+    currentInstrument: state.currentInst.selectedInstrument,
+    instruments: state.instruments
   }
 }
 
@@ -187,6 +203,7 @@ const mapDispatch = dispatch => {
   return {
     armInst: (cellId, instrument) => dispatch(armInstrumentThunk(cellId, instrument)),
     disarmInst: (cellId, instrument) => dispatch(disarmInstrumentThunk(cellId, instrument)),
+    clearDrumbo: () => dispatch(clearDrumboThunk())
   }
 }
 

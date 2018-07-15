@@ -1,13 +1,14 @@
+
 const SWITCH_INSTRUMENT = 'SWITCH_INSTRUMENT'
 
 const initialState = {
-  selectedInstrument: 'snare'
+  selectedInstrument: { url: 'https://res.cloudinary.com/dl7gzlb0w/video/upload/v1531265492/Snare.mp3' }
 }
 
 const switchInstrumentAction = (instStr) => {
   return {
     type: SWITCH_INSTRUMENT,
-    instStr
+    instStr: { url: instStr }
   }
 }
 

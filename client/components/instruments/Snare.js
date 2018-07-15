@@ -1,42 +1,23 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Sound from 'react-sound'
 import { connect } from 'react-redux'
 
-const soundFile = 'https://res.cloudinary.com/dl7gzlb0w/video/upload/v1531254315/Snare.mp3'
+const soundFile = 'https://res.cloudinary.com/dl7gzlb0w/video/upload/v1531265492/Snare.mp3'
 
-class Snare extends Component {
-  constructor () {
-    super()
-    this.state = {
-      sounds: []
+const Snare = (props) => {
+  const playIt = props.hits.includes(props.activeCell)
+  return (
+    <div>
+    {
+      playIt &&
+      <Sound 
+        autoLoad={true}
+        url={soundFile}
+        playStatus={Sound.status.PLAYING}
+        />
     }
-  }
-
-  handleChange = () => {
-    console.log('CHAAANCGE')
-    this.setState({
-      sounds: this.state.sounds.concat({ url: soundFile })
-    })
-  }
- 
-  render() {
-
-    const playIt = this.props.hits.includes(this.props.activeCell)
-    // playIt && this.handleChange()
-    // console.log(playIt)
-
-    return (
-      <div>
-      {
-        playIt &&
-        <Sound 
-          url={soundFile}
-          playStatus={Sound.status.PLAYING}
-          />
-      }
-      </div>
-    )
-  }
+    </div>
+  )
 }
 
 const mapState = state => {
