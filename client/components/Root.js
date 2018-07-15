@@ -20,7 +20,6 @@ class Root extends Component {
 
   componentDidUpdate() {
     this.updateSoundArr()
-    console.log('huh')
   }
 
   handleInputChange = (event) => {
@@ -67,19 +66,26 @@ class Root extends Component {
   }
 
   clearDrumbo = () => {
+    const activeCells = document.getElementsByTagName("td")
+    console.log(activeCells)
+    for (let i = activeCells.length - 1; i >= 0; i--) {
+      activeCells[i].classList = ""
+    }
     this.props.clearDrumbo()
+    this.setState({activeCell: 0})
   }
 
   handleClick = (event) => {
     const cell = event.currentTarget
     const cellId = Number(event.target.getAttribute('value'))
-    const instrument = this.props.currentInstrument
-    if (cell.classList.contains("active")) {
-      cell.classList.remove("active")
-      this.props.disarmInst(cellId, instrument)
-    } else {
-      cell.classList.add("active")
-      this.props.armInst(cellId, instrument)
+    const instObj = this.props.currentInstrument
+    const instrument = this.props.currentInstrument.instrument
+    if (cell.classList.contains(instrument)) {
+      cell.classList.remove(instrument)
+      this.props.disarmInst(cellId, instObj)
+  } else {
+      cell.classList.add(instrument)
+      this.props.armInst(cellId, instObj)
     }
   }
 
@@ -103,18 +109,17 @@ class Root extends Component {
       { active: 0, id: 15 },
     ]
 
+    // v displays current position of iterator 
     iterator.map((cell) => {
       cell.id === this.state.activeCell ? //
       cell.active = 1 :
       cell.active = 0
     })
 
-    // const playIt = this.state.isArmed.includes(this.state.activeCell)
-
     return (
       <div id="container">
         {
-          this.state.sounds.map(sound => <Sound autoLoad={true} url={sound.url} playStatus={Sound.status.PLAYING} playFromPosition={-20} />)
+          this.state.sounds.map(sound => <Sound autoLoad={true} url={sound.url} playStatus={Sound.status.PLAYING} playFromPosition={0} />)
         }
         <table id="iterator">
           <tbody>

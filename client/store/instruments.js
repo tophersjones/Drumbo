@@ -90,8 +90,7 @@ export default function(state = initialState, action) {
       const beat = action.cellId
       return { ...state, [beat]: [...state[beat], action.instrument] }
     case DISARM_INSTRUMENT:
-      const filteredArr = state[action.cellId].filter(instrument => instrument !== action.instrument)
-      console.log(filteredArr)
+      const filteredArr = state[action.cellId].filter(instrument => instrument.instrument !== action.instrument.instrument)
       return { ...state, [action.cellId]: filteredArr }
     case CLEAR_DRUMBO:
       return initialState 
