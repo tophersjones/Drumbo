@@ -18,6 +18,10 @@ class Root extends Component {
     }
   }
 
+  componentDidMount() {
+    document.addEventListener('keypress', this.handleKeyPress)
+  }
+
   componentDidUpdate() {
     this.updateSoundArr()
   }
@@ -27,14 +31,17 @@ class Root extends Component {
   }
 
   startIterator = (event) => {
-    event.preventDefault()
+    if (event) {
+      event.preventDefault()
+    }
     this.iterateFunc()
     this.setState({isGoing: true})
-    
   } 
 
   stopIterator = (event) => {
-    event.preventDefault()
+    if (event) {
+      event.preventDefault()
+    }
     clearInterval(this.state.intervalId)
     this.setState({isGoing: false})
   }
@@ -56,7 +63,7 @@ class Root extends Component {
   }
 
   iterateFunc = () => {
-    let cell = -1
+    let cell = this.state.activeCell
     this.setState({intervalId: setInterval( () => {
        this.setState({
          activeCell: (++cell) % 16,
@@ -67,7 +74,6 @@ class Root extends Component {
 
   clearDrumbo = () => {
     const activeCells = document.getElementsByTagName("td")
-    console.log(activeCells)
     for (let i = activeCells.length - 1; i >= 0; i--) {
       activeCells[i].classList = ""
     }
@@ -86,6 +92,16 @@ class Root extends Component {
   } else {
       cell.classList.add(instrument)
       this.props.armInst(cellId, instObj)
+    }
+  }
+
+  handleKeyPress = (event) => {
+    if (event.code === 'Space') {
+      if (this.state.isGoing) {
+        this.stopIterator()
+      } else {
+        this.startIterator()
+      }
     }
   }
 
@@ -111,15 +127,15 @@ class Root extends Component {
 
     // v displays current position of iterator 
     iterator.map((cell) => {
-      cell.id === this.state.activeCell ? //
+      cell.id === this.state.activeCell ?
       cell.active = 1 :
       cell.active = 0
     })
 
     return (
-      <div id="container">
+      <div id="container" onKeyDown={this.handleKeyPress}>
         {
-          this.state.sounds.map(sound => <Sound autoLoad={true} url={sound.url} playStatus={Sound.status.PLAYING} playFromPosition={0} />)
+          this.state.sounds.map(sound => <Sound url={sound.url} playStatus={Sound.status.PLAYING} playFromPosition={0} />)
         }
         <table id="iterator">
           <tbody>
