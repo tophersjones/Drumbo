@@ -5,6 +5,7 @@ import { switchInstrumentThunk } from '../store/currentInst';
 class InstButtons extends Component {
 
   handleChange = (event) => {
+    // on inst change clears out classes for all cells
     const allCells = document.getElementsByTagName('td')
     for (let i = allCells.length - 1; i >= 0; i--) {
       allCells[i].classList = ""
@@ -13,9 +14,12 @@ class InstButtons extends Component {
   }
   
   switchView = async (event) => {
+    // sends switchInst dispatch
     const link = event.target.getAttribute('value')
     const instrument = event.target.getAttribute('instrument')
     await this.props.switchInst(link, instrument)
+    // gets updated currentInst, loops over allcells, assigns
+    // classes to allCells based on store state
     const currentInst = this.props.currentInstrument.instrument
     const allCells = document.getElementsByTagName('td')
     for (let i = allCells.length - 1; i >= 0; i--) {
