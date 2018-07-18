@@ -45,6 +45,38 @@ tr:nth-child(even) {
   background-color: rgb(197, 110, 110);
 }
 
+.snare {
+  background-color: rgb(197, 110, 110);
+}
+
+.kick {
+  background-color: rgb(70, 125, 214)
+}
+
+.floor {
+  background-color: rgb(58, 130, 62)
+}
+
+.rack {
+  background-color: rgb(178, 117, 80)
+}
+
+.hat {
+  background-color: rgb(166, 85, 224)
+}
+
+.ride {
+  background-color: rgb(22, 169, 226)
+}
+
+.crash {
+  background-color: rgb(170, 166, 158)
+}
+
+.invisible {
+  background-color: white
+}
+
 #drumbo {
   background-color: rgb(143, 212, 212)
 }

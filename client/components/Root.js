@@ -18,9 +18,12 @@ class Root extends Component {
     }
   }
 
+  componentDidMount() {
+    document.addEventListener('keypress', this.handleKeyPress)
+  }
+
   componentDidUpdate() {
     this.updateSoundArr()
-    console.log('huh')
   }
 
   handleInputChange = (event) => {
@@ -28,14 +31,17 @@ class Root extends Component {
   }
 
   startIterator = (event) => {
-    event.preventDefault()
+    if (event) {
+      event.preventDefault()
+    }
     this.iterateFunc()
     this.setState({isGoing: true})
-    
   } 
 
   stopIterator = (event) => {
-    event.preventDefault()
+    if (event) {
+      event.preventDefault()
+    }
     clearInterval(this.state.intervalId)
     this.setState({isGoing: false})
   }
@@ -57,7 +63,7 @@ class Root extends Component {
   }
 
   iterateFunc = () => {
-    let cell = -1
+    let cell = this.state.activeCell
     this.setState({intervalId: setInterval( () => {
        this.setState({
          activeCell: (++cell) % 16,
@@ -67,19 +73,35 @@ class Root extends Component {
   }
 
   clearDrumbo = () => {
+    const activeCells = document.getElementsByTagName("td")
+    for (let i = activeCells.length - 1; i >= 0; i--) {
+      activeCells[i].classList = ""
+    }
     this.props.clearDrumbo()
+    this.setState({activeCell: 0})
   }
 
   handleClick = (event) => {
     const cell = event.currentTarget
     const cellId = Number(event.target.getAttribute('value'))
-    const instrument = this.props.currentInstrument
-    if (cell.classList.contains("active")) {
-      cell.classList.remove("active")
-      this.props.disarmInst(cellId, instrument)
-    } else {
-      cell.classList.add("active")
-      this.props.armInst(cellId, instrument)
+    const instObj = this.props.currentInstrument
+    const instrument = this.props.currentInstrument.instrument
+    if (cell.classList.contains(instrument)) {
+      cell.classList.remove(instrument)
+      this.props.disarmInst(cellId, instObj)
+  } else {
+      cell.classList = instrument
+      this.props.armInst(cellId, instObj)
+    }
+  }
+
+  handleKeyPress = (event) => {
+    if (event.code === 'Space') {
+      if (this.state.isGoing) {
+        this.stopIterator()
+      } else {
+        this.startIterator()
+      }
     }
   }
 
@@ -103,18 +125,17 @@ class Root extends Component {
       { active: 0, id: 15 },
     ]
 
+    // v displays current position of iterator 
     iterator.map((cell) => {
-      cell.id === this.state.activeCell ? //
+      cell.id === this.state.activeCell ?
       cell.active = 1 :
       cell.active = 0
     })
 
-    // const playIt = this.state.isArmed.includes(this.state.activeCell)
-
     return (
-      <div id="container">
+      <div id="container" onKeyDown={this.handleKeyPress}>
         {
-          this.state.sounds.map(sound => <Sound autoLoad={true} url={sound.url} playStatus={Sound.status.PLAYING} playFromPosition={-20} />)
+          this.state.sounds.map(sound => <Sound url={sound.url} playStatus={Sound.status.PLAYING} playFromPosition={0} />)
         }
         <table id="iterator">
           <tbody>
