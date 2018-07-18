@@ -5,9 +5,25 @@ import { switchInstrumentThunk } from '../store/currentInst';
 class InstButtons extends Component {
 
   handleChange = (event) => {
+    const allCells = document.getElementsByTagName('td')
+    for (let i = allCells.length - 1; i >= 0; i--) {
+      allCells[i].classList = ""
+    }
+    this.switchView(event)
+  }
+  
+  switchView = async (event) => {
     const link = event.target.getAttribute('value')
     const instrument = event.target.getAttribute('instrument')
-    this.props.switchInst(link, instrument)
+    await this.props.switchInst(link, instrument)
+    const currentInst = this.props.currentInstrument.instrument
+    const allCells = document.getElementsByTagName('td')
+    for (let i = allCells.length - 1; i >= 0; i--) {
+      const simplifiedArr = this.props.instruments[i].map(element => element.instrument)
+      if (simplifiedArr.includes(currentInst)) {
+        allCells[i].classList.add(currentInst)
+      }
+    }
   }
 
   render() {
@@ -85,7 +101,8 @@ class InstButtons extends Component {
 
 const mapState = state => {
   return {
-    currentInstrument: state.currentInst.selectedInstrument
+    currentInstrument: state.currentInst.selectedInstrument,
+    instruments: state.instruments
   }
 }
 
