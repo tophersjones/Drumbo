@@ -86,7 +86,6 @@ class Root extends Component {
     const cellId = Number(event.target.getAttribute('value'))
     const instObj = this.props.currentInstrument
     const instrument = this.props.currentInstrument.instrument
-    const jesus = document.getElementsByTagName('td')
     if (cell.classList.contains(instrument)) {
       cell.classList.remove(instrument)
       this.props.disarmInst(cellId, instObj)
